@@ -6,7 +6,6 @@
 // original are preserved here, except where they are obviously not true in the
 // transliterated code.
 //
-// The implementation of CityHash128 is not yet complete.
 package cityhash
 
 // Some primes between 2^63 and 2^64 for various uses.
@@ -161,6 +160,91 @@ func Hash32(s []byte) uint32 {
 	h = h*5 + magic
 	h = ror32(h, 17) * c1
 	return h
+}
+
+// Hash128 returns a 128-bit hash value for s.
+func Hash128(s []byte) (lo, hi uint64) {
+	if len(s) >= 16 {
+		return Hash128WithSeed(s[16:], fetch64(s), fetch64(s[8:])+k0)
+	}
+	return Hash128WithSeed(s, k0, k1)
+}
+
+// Hash128WithSeed returns a 128-bit hash value for s that includes the given
+// 128-bit seed.
+func Hash128WithSeed(s []byte, seed0, seed1 uint64) (lo, hi uint64) {
+	if len(s) < 128 {
+		return cityMurmur(s, seed0, seed1)
+	}
+
+	// We expect len >= 128 to be the common case.
+	// Keep 56 bytes of state: v, w, x, y, and z.
+	n := uint64(len(s))
+	x := seed0
+	y := seed1
+	z := n * k1
+	v1 := ror64(y^k1, 49)*k1 + fetch64(s)
+	v2 := ror64(v1, 42)*k1 + fetch64(s[8:])
+	w1 := ror64(y+z, 35)*k1 + x
+	w2 := ror64(x+fetch64(s[88:]), 53) * k1
+
+	// This is the same inner loop as Hash64, manually unrolled.
+	t := s
+	for n >= 128 {
+		// Iteration 1
+		x = ror64(x+y+v1+fetch64(t[8:]), 37) * k1
+		y = ror64(y+v2+fetch64(t[48:]), 42) * k1
+		x ^= w2
+		y += v1 + fetch64(t[40:])
+		z = ror64(z+w1, 33) * k1
+		v1, v2 = weakHashLen32WithSeeds(t, v2*k1, x+w1)
+		w1, w2 = weakHashLen32WithSeeds(t[32:], z+w2, y+fetch64(t[16:]))
+		x, z = z, x
+		t = t[64:]
+
+		// Iteration 2
+		x = ror64(x+y+v1+fetch64(t[8:]), 37) * k1
+		y = ror64(y+v2+fetch64(t[48:]), 42) * k1
+		x ^= w2
+		y += v1 + fetch64(t[40:])
+		z = ror64(z+w1, 33) * k1
+		v1, v2 = weakHashLen32WithSeeds(t, v2*k1, x+w1)
+		w1, w2 = weakHashLen32WithSeeds(t[32:], z+w2, y+fetch64(t[16:]))
+		x, z = z, x
+		t = t[64:]
+
+		n -= 128
+	}
+	x += ror64(v1+z, 49) * k0
+	y = y*k0 + ror64(w2, 37)
+	z = z*k0 + ror64(w1, 27)
+	w1 *= 9
+	v1 *= k0
+
+	// Here, unlike in Hash64, we didn't do the tail block ahead of time.
+	// We hash in 32-byte blocks working back-to-front, including as many bytes
+	// as necessary from the chunk prior to t to ensure we have a whole number
+	// of blocks.
+	tail := s[len(s)-128:]
+	for pos := 0; pos < int(n); pos += 32 {
+		offset := len(tail) - pos - 32
+		block := tail[offset:]
+
+		y = ror64(x+y, 42)*k0 + v2
+		w1 += fetch64(block[16:])
+		x = x*k0 + w1
+		z += w2 + fetch64(block)
+		w2 += v1
+		v1, v2 = weakHashLen32WithSeeds(block, v1+z, v2)
+		v1 *= k0
+	}
+
+	// At this point our 56 bytes of state should contain more than
+	// enough information for a strong 128-bit hash.  We use two
+	// different 56-byte-to-8-byte hashes to get a 16-byte final result.
+	x = hash64Len16(x, v1)
+	y = hash64Len16(y+z, w1)
+	return hash64Len16(x+v2, w2) + y, hash64Len16(x+w2, y+v2)
 }
 
 // Hash128To64 returns a 64-bit hash value for an input of 128 bits.

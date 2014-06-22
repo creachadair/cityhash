@@ -25,10 +25,14 @@ func TestCityHash(t *testing.T) {
 	// Each position of a testData vector contains one of the expected results;
 	// the tests hard-code the specific offsets.
 	const (
-		ch64      = 0
-		ch64Seed  = 1
-		ch64Seeds = 2
-		ch32      = 15
+		ch64        = 0
+		ch64Seed    = 1
+		ch64Seeds   = 2
+		ch128Lo     = 3
+		ch128Hi     = 4
+		ch128SeedLo = 5
+		ch128SeedHi = 6
+		ch32        = 15
 	)
 	for i := 0; i < len(testData)-1; i++ {
 		pos := i * i
@@ -50,6 +54,26 @@ func TestCityHash(t *testing.T) {
 		if got, want := Hash64WithSeeds(bits, seed0, seed1), testData[i][ch64Seeds]; got != want {
 			t.Errorf("[%d] Hash64WithSeeds %+v %x|%x: got %x, want %x",
 				i, bits, seed0, seed1, got, want)
+		}
+
+		{
+			lo, hi := Hash128(bits)
+			wantLo := testData[i][ch128Lo]
+			wantHi := testData[i][ch128Hi]
+			if lo != wantLo || hi != wantHi {
+				t.Errorf("[%d] Hash128 %+v lo: got %x|%x, want %x|%x",
+					i, bits, lo, hi, wantLo, wantHi)
+			}
+		}
+		{
+			lo, hi := Hash128WithSeed(bits, seed0, seed1)
+			wantLo := testData[i][ch128SeedLo]
+			wantHi := testData[i][ch128SeedHi]
+			if lo != wantLo || hi != wantHi {
+				t.Errorf("[%d] Hash128WithSeed %+v %x|%x lo: got %x|%x, want %x|%x",
+					i, bits, seed0, seed1, lo, hi, wantLo, wantHi)
+			}
+
 		}
 	}
 }

@@ -195,3 +195,39 @@ func hash32Len13to24(s []byte) uint32 {
 
 	return fmix(mur(f, mur(e, mur(d, mur(c, mur(b, mur(a, h)))))))
 }
+
+// A subroutine for Hash128.  Returns a decent 128-bit hash for s based on City
+// and Murmur.
+func cityMurmur(s []byte, seed0, seed1 uint64) (lo, hi uint64) {
+	a := seed0
+	b := seed1
+	var c, d uint64
+	n := int64(len(s) - 16)
+	if n <= 0 {
+		a = shiftMix(a*k1) * k1
+		c = b*k1 + hash64Len0to16(s)
+
+		if len(s) >= 8 {
+			d = shiftMix(a + fetch64(s))
+		} else {
+			d = shiftMix(a + c)
+		}
+	} else {
+		c = hash64Len16(fetch64(s[len(s)-8:])+k1, a)
+		d = hash64Len16(b+uint64(len(s)), c+fetch64(s[len(s)-16:]))
+		a += d
+		for n > 0 {
+			a ^= shiftMix(fetch64(s)*k1) * k1
+			a *= k1
+			b ^= a
+			c ^= shiftMix(fetch64(s[8:])*k1) * k1
+			c *= k1
+			d ^= c
+			s = s[16:]
+			n -= 16
+		}
+	}
+	a = hash64Len16(a, c)
+	b = hash64Len16(d, b)
+	return a ^ b, hash64Len16(b, a)
+}
