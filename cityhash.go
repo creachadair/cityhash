@@ -75,14 +75,6 @@ func Hash64WithSeeds(s []byte, seed0, seed1 uint64) uint64 {
 	return hash64Len16(Hash64(s)-seed0, seed1)
 }
 
-func cityHash128(s []byte) (lo, hi uint64) {
-	return 0, 0
-}
-
-func cityHash128WithSeed(s []byte, loSeed, hiSeed uint64) (lo, hi uint64) {
-	return 0, 0
-}
-
 // Hash32 returns a 32-bit hash for s.
 func Hash32(s []byte) uint32 {
 	n := uint32(len(s))
