@@ -9,5 +9,5 @@ This implementation is up-to-date with version 1.1.1 of the C++ library.
 The unit tests were constructed by extracting the test vectors from the C++
 unit test file.  The `convert_tests` script does this extraction.
 
-The original CityHash code can be found at: http://code.google.com/p/cityhash/
+The original CityHash code can be found at: http://github.com/google/cityhash.
 View documentation on [GoDoc](http://godoc.org/bitbucket.org/creachadair/cityhash/).
