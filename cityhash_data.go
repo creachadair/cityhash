@@ -1,3 +1,5 @@
+// Generated code, do not edit.
+// To re-generate this file, run: ./convert_tests
 package cityhash
 
 const (

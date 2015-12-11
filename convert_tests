@@ -65,6 +65,8 @@ def write_testdata(testdata, path):
     """Write the testdata values in rows to the file named by path."""
     with file(path, 'wt') as ofp:
         p = proc.Popen(['gofmt'], stdin=proc.PIPE, stdout=ofp)
+        p.stdin.write('// Generated code, do not edit.\n')
+        p.stdin.write('// To re-generate this file, run: %s\n' % ' '.join(sys.argv))
         p.stdin.write('package cityhash\n')
         p.stdin.write('const (\n')
         p.stdin.write('dataSize=%s\n' % testdata['kDataSize'])
