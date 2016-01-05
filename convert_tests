@@ -12,8 +12,8 @@ from __future__ import print_function
 import subprocess as proc
 import os, re, sys
 
-CITYHASH_REPO = 'http://cityhash.googlecode.com/svn/trunk/'
-REPO_MIRROR   = 'cityhash-read-only'
+CITYHASH_REPO = 'https://github.com/google/cityhash.git'
+REPO_MIRROR   = 'cityhash-mirror'
 CITYHASH_TEST = os.path.join(REPO_MIRROR, 'src/city-test.cc')
 OUTPUT_FILE   = 'cityhash_data.go'
 
@@ -21,7 +21,7 @@ def checkout(repo, dir):
     """Check out the named Subversion repository into the specified local
     directory.
     """
-    proc.check_call(['svn', 'checkout', repo, dir])
+    proc.check_call(['git', 'clone', repo, dir])
 
 def cleanup(dir):
     """Delete the named directory and all its contents, if it exists."""
