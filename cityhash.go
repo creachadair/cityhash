@@ -2,7 +2,7 @@
 // hashing functions.
 //
 // The implementation is a fairly straightforward transliteration of the C++
-// code from http://code.google.com/p/cityhash/.  Most of the comments from the
+// code from https://github.com/google/cityhash.  Most of the comments from the
 // original are preserved here, except where they are obviously not true in the
 // transliterated code.
 //
