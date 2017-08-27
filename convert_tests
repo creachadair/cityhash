@@ -6,7 +6,7 @@
 ## Usage:
 ##   convert_tests
 ##
-## Output is written to cityhash_data.go
+## Output is written to cityhash_testdata_test.go
 ##
 from __future__ import print_function
 import subprocess as proc
@@ -15,7 +15,7 @@ import os, re, sys
 CITYHASH_REPO = 'https://github.com/google/cityhash.git'
 REPO_MIRROR   = 'cityhash-mirror'
 CITYHASH_TEST = os.path.join(REPO_MIRROR, 'src/city-test.cc')
-OUTPUT_FILE   = 'cityhash_data.go'
+OUTPUT_FILE   = 'cityhash_testdata_test.go'
 
 def checkout(repo, dir):
     """Check out the named Subversion repository into the specified local
