@@ -18,8 +18,7 @@ CITYHASH_TEST = os.path.join(REPO_MIRROR, 'src/city-test.cc')
 OUTPUT_FILE   = 'cityhash_testdata_test.go'
 
 def checkout(repo, dir):
-    """Check out the named Subversion repository into the specified local
-    directory.
+    """Check out the specified Git repo URL into the specified local directory.
     """
     proc.check_call(['git', 'clone', repo, dir])
 
