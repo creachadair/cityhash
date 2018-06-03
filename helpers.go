@@ -117,12 +117,12 @@ func hash64Len33to64(s []byte) uint64 {
 
 func hash128to64(lo, hi uint64) uint64 {
 	// Murmur-inspired hashing.
-	const kMul = uint64(0x9ddfea08eb382d69)
-	a := (lo ^ hi) * kMul
+	const mul = uint64(0x9ddfea08eb382d69)
+	a := (lo ^ hi) * mul
 	a ^= (a >> 47)
-	b := (hi ^ a) * kMul
+	b := (hi ^ a) * mul
 	b ^= (b >> 47)
-	b *= kMul
+	b *= mul
 	return b
 }
 

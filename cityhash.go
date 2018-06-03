@@ -27,9 +27,8 @@ func Hash64(s []byte) uint64 {
 	if n <= 32 {
 		if n <= 16 {
 			return hash64Len0to16(s)
-		} else {
-			return hash64Len17to32(s)
 		}
+		return hash64Len17to32(s)
 	} else if n <= 64 {
 		return hash64Len33to64(s)
 	}
