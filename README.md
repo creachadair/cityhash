@@ -1,3 +1,7 @@
+# cityhash
+
+http://godoc.org/bitbucket.org/creachadair/cityhash
+
 A transliteration of the CityHash implementation from C++ to Go.
 
 This is a straightforward implementation in Go of the CityHash
@@ -10,4 +14,3 @@ The unit tests were constructed by extracting the test vectors from the C++
 unit test file.  The `convert_tests` script does this extraction.
 
 The original CityHash code can be found at: http://github.com/google/cityhash.
-View documentation on [GoDoc](http://godoc.org/bitbucket.org/creachadair/cityhash/).
