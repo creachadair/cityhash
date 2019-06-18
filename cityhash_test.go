@@ -3,7 +3,7 @@ package cityhash_test
 import (
 	"testing"
 
-	"bitbucket.org/creachadair/cityhash"
+	"github.com/creachadair/cityhash"
 )
 
 var data = make([]byte, dataSize)
