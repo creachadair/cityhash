@@ -69,9 +69,10 @@ def write_testdata(testdata, path):
         buf.write('''// Generated code, do not edit.
 // To re-generate this file, run: {args}
 
-package cityhash
+package cityhash_test
 
 const (
+    k0=uint64({k0})
     dataSize={kDataSize}
     seed0={kSeed0}
     seed1={kSeed1}
