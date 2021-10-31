@@ -1,6 +1,8 @@
 package cityhash
 
-import "encoding/binary"
+import (
+	"unsafe"
+)
 
 // A 32-bit to 32-bit integer hash copied from Murmur3.
 func fmix(h uint32) uint32 {
@@ -80,16 +82,27 @@ func hash64Len17to32(s []byte) uint64 {
 	return hash64Len16Mul(ror64(a+b, 43)+ror64(c, 30)+d, a+ror64(b+k2, 18)+c, mul)
 }
 
+func rev(b []byte) {
+	for i, j := 0, len(b)-1; i < j; i++ {
+		b[i], b[j] = b[j], b[i]
+		j--
+	}
+}
+
 func bswap64(in uint64) uint64 {
 	var buf [8]byte
-	binary.LittleEndian.PutUint64(buf[:], in)
-	return binary.BigEndian.Uint64(buf[:])
+	p := (*uint64)(unsafe.Pointer(&buf[0]))
+	*p = in
+	rev(buf[:])
+	return *p
 }
 
 func bswap32(in uint32) uint32 {
 	var buf [4]byte
-	binary.LittleEndian.PutUint32(buf[:], in)
-	return binary.BigEndian.Uint32(buf[:])
+	p := (*uint32)(unsafe.Pointer(&buf[0]))
+	*p = in
+	rev(buf[:])
+	return *p
 }
 
 // Return an 8-byte hash for 33 to 64 bytes.
@@ -126,8 +139,8 @@ func hash128to64(lo, hi uint64) uint64 {
 	return b
 }
 
-var fetch64 = binary.LittleEndian.Uint64 // :: []byte -> uint64
-var fetch32 = binary.LittleEndian.Uint32 // :: []byte -> uint32
+func fetch64(b []byte) uint64 { return *(*uint64)(unsafe.Pointer(&b[0])) }
+func fetch32(b []byte) uint32 { return *(*uint32)(unsafe.Pointer(&b[0])) }
 
 // Return a 16-byte hash for s[0] ... s[31], a, and b.  Quick and dirty.
 // Callers do best to use "random-looking" values for a and b.
