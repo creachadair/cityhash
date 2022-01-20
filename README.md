@@ -1,7 +1,6 @@
 # cityhash
 
 [![GoDoc](https://img.shields.io/static/v1?label=godoc&message=reference&color=blue)](https://pkg.go.dev/github.com/creachadair/cityhash)
-[![Go Report Card](https://goreportcard.com/badge/github.com/creachadair/cityhash)](https://goreportcard.com/report/github.com/creachadair/cityhash)
 
 A transliteration of the CityHash implementation from C++ to Go.
 
