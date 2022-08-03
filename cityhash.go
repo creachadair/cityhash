@@ -5,7 +5,6 @@
 // code from https://github.com/google/cityhash.  Most of the comments from the
 // original are preserved here, except where they are obviously not true in the
 // transliterated code.
-//
 package cityhash
 
 // Some primes between 2^63 and 2^64 for various uses.
