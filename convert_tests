@@ -8,7 +8,6 @@
 ##
 ## Output is written to cityhash_testdata_test.go
 ##
-from __future__ import print_function
 import subprocess as proc
 import io, os, re, sys
 
