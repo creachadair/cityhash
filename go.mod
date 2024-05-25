@@ -1,3 +1,3 @@
 module github.com/creachadair/cityhash
 
-go 1.20
+go 1.22
